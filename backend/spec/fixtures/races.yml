@@ -1,0 +1,11 @@
+london_marathon:
+  id: 123
+  name: London Marathon
+
+berlin_marathon:
+  id: 321
+  name: Berlin Marathon
+
+boston_marathon:
+  id: 777
+  name: Boston Marathon

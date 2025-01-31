@@ -24,7 +24,7 @@ class RacesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /races/1
+  # PATCH /races/1
   def update
     if @race.update(race_params)
       render json: @race
