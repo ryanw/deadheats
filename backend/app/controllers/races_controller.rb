@@ -3,22 +3,22 @@ class RacesController < ApplicationController
 
   # GET /races
   def index
-    @races = Race.all
+    @races = Race.includes(lanes: [:competitor]).all
 
-    render json: @races
+    render json: @races, include: race_includes
   end
 
   # GET /races/1
   def show
-    render json: @race
+    render json: @race, include: race_includes
   end
 
   # POST /races
   def create
-    @race = Race.new(race_params)
+    @race = Race.new(race_params(sort: true))
 
     if @race.save
-      render json: @race, status: :created, location: @race
+      render json: @race, status: :created, location: @race, include: race_includes
     else
       render json: @race.errors, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class RacesController < ApplicationController
   # PATCH /races/1
   def update
     if @race.update(race_params)
-      render json: @race
+      render json: @race, include: race_includes
     else
       render json: @race.errors, status: :unprocessable_entity
     end
@@ -41,11 +41,29 @@ class RacesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_race
-      @race = Race.find(params.expect(:id))
+      @race = Race.includes(lanes: [:competitor]).find(params.expect(:id))
     end
 
-    # Only allow a list of trusted parameters through.
-    def race_params
-      params.expect(race: [ :name ])
+    def race_params(sort: false)
+      # Remap nested records to *_attributes
+      final_params = params.expect(race: [:name, lanes: [[:id, :name, competitor: [:id, :name]]]])
+      if final_params.key?(:lanes)
+        final_params[:lanes_attributes] = final_params.delete(:lanes).map.with_index { |lane, i|
+          if lane.key?(:competitor)
+            lane[:competitor_attributes] = lane.delete(:competitor)
+          end
+          if sort
+            # Inject sort order
+            lane[:sort] = i
+          end
+          lane
+        }
+      end
+
+      final_params
+    end
+
+    def race_includes
+      [lanes: { include: [:competitor] }]
     end
 end

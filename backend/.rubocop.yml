@@ -4,6 +4,9 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+
 Style/StringLiterals:
   EnforcedStyle: single_quotes
   Enabled: true
@@ -11,5 +14,5 @@ Style/StringLiterals:
 Style/TrailingCommaInHashLiteral:
   Enabled: false
 
-Layout/SpaceInsideArrayLiteralBrackets:
+Style/TrailingCommaInArrayLiteral:
   Enabled: false

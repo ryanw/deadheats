@@ -10,13 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_31_120304) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_31_220840) do
+  create_table "competitors", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "lanes", force: :cascade do |t|
     t.integer "race_id", null: false
+    t.integer "competitor_id"
     t.integer "sort", null: false
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["competitor_id"], name: "index_lanes_on_competitor_id"
     t.index ["race_id", "sort"], name: "index_lanes_on_race_id_and_sort", unique: true
     t.index ["race_id"], name: "index_lanes_on_race_id"
   end
@@ -27,5 +35,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_31_120304) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "lanes", "competitors"
   add_foreign_key "lanes", "races"
 end

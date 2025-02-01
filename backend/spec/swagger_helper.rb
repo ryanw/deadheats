@@ -34,33 +34,94 @@ RSpec.configure do |config|
       ],
       components: {
         schemas: {
+          # Models
           Race: {
             type: :object,
             properties: {
               id: { type: :integer },
               name: { type: :string },
+              created_at: { type: :string, format: :'date-time' },
+              updated_at: { type: :string, format: :'date-time' },
               lanes: { type: :array, items: { '$ref': '#/components/schemas/Lane' } }
             },
-            required: [ 'id', 'name' ]
+            required: [ 'id', 'name', 'lanes', 'created_at', 'updated_at' ],
           },
           Lane: {
             type: :object,
             properties: {
               id: { type: :integer },
+              race_id: { type: :integer },
+              competitor_id: { type: :integer, nullable: true },
               name: { type: :string },
               sort: { type: :integer },
+              created_at: { type: :string, format: :'date-time' },
+              updated_at: { type: :string, format: :'date-time' },
               competitor: { '$ref': '#/components/schemas/Competitor', nullable: true }
             },
-            required: [ 'id', 'name', 'sort' ]
+            required: [ 'id', 'name', 'sort', 'created_at', 'updated_at' ]
           },
           Competitor: {
             type: :object,
             properties: {
               id: { type: :integer },
               name: { type: :string },
-              position: { type: :integer, nullable: true }
+              created_at: { type: :string, format: :'date-time' },
+              updated_at: { type: :string, format: :'date-time' },
             },
-            required: [ 'id', 'name' ]
+            required: [ 'id', 'name', 'created_at', 'updated_at' ]
+          },
+
+          # Inputs
+          RaceInput: {
+            type: :object,
+            properties: {
+              name: { type: :string },
+              lanes: {
+                type: :array,
+                items: { '$ref': '#/components/schemas/LaneInput' }
+              }
+            },
+            required: [ 'name', 'lanes' ],
+            example: {
+              race: {
+                name: 'Test Race 123',
+                lanes: [
+                  { name: 'A', competitor: { name: 'Bill' } },
+                  { name: 'B', competitor: { name: 'Ted' } },
+                  { name: 'C', competitor: { name: 'Joanna' } },
+                  { name: 'D', competitor: { name: 'Elizabeth' } },
+                  { name: 'E', competitor: { name: 'Rufus' } },
+                ]
+              }
+            }
+          },
+          LaneInput: {
+            type: :object,
+            properties: {
+              name: { type: :string },
+              competitor: { '$ref': '#/components/schemas/CompetitorInput', nullable: true },
+            },
+            required: [ 'name' ],
+            example: {
+              lane: {
+                name: 'A',
+                competitor: {
+                  name: 'Bill',
+                }
+              }
+            },
+          },
+          CompetitorInput: {
+            type: :object,
+            properties: {
+              name: { type: :string },
+            },
+            required: [ 'name' ],
+            example: {
+              competitor: {
+                name: 'Bill',
+              }
+            },
           },
         }
       }
