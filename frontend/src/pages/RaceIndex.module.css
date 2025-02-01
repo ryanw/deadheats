@@ -1,0 +1,27 @@
+.page {
+  max-width: 1024px;
+  margin: 2em auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  table {
+    width: 100%;
+  }
+}
+
+.loading {
+  position: relative;
+  &::before {
+    display: block;
+    content: "Loading...";
+
+    position: absolute;
+    top: 2em;
+    left: 50%;
+    margin-left: -60px;
+    width: 120px;
+    text-align: center;
+    background: var(--panel-color);
+    color: var(--on-panel-color);
+    padding: var(--pad);
+    border-radius: var(--border-radius);
+  }
+}
