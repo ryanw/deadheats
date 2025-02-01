@@ -15,7 +15,7 @@ class RacesController < ApplicationController
 
   # POST /races
   def create
-    @race = Race.new(race_params(sort: true))
+    @race = Race.new(race_params(sort_lanes: true))
 
     if @race.save
       render json: @race, status: :created, location: @race, include: race_includes
@@ -39,23 +39,22 @@ class RacesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_race
       @race = Race.includes(lanes: [:competitor]).find(params.expect(:id))
     end
 
-    def race_params(sort: false)
+    def race_params(sort_lanes: false)
       # Remap nested records to *_attributes
-      final_params = params.expect(race: [:name, lanes: [[:id, :name, competitor: [:id, :name]]]])
+      final_params = params.expect(race: [:name, lanes: [[:id, :name, competitor: [:id, :name, :position]]]])
       if final_params.key?(:lanes)
         final_params[:lanes_attributes] = final_params.delete(:lanes).map.with_index { |lane, i|
           if lane.key?(:competitor)
             lane[:competitor_attributes] = lane.delete(:competitor)
           end
-          if sort
-            # Inject sort order
-            lane[:sort] = i
-          end
+
+          # Inject sort order
+          lane[:sort] = i if sort_lanes
+
           lane
         }
       end

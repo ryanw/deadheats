@@ -211,6 +211,7 @@
         "required": [
           "id",
           "name",
+          "race_id",
           "sort",
           "created_at",
           "updated_at"
@@ -265,13 +266,15 @@
               {
                 "name": "A",
                 "competitor": {
-                  "name": "Bill"
+                  "name": "Bill",
+                  "position": 3
                 }
               },
               {
                 "name": "B",
                 "competitor": {
-                  "name": "Ted"
+                  "name": "Ted",
+                  "position": 1
                 }
               },
               {
@@ -283,7 +286,8 @@
               {
                 "name": "D",
                 "competitor": {
-                  "name": "Elizabeth"
+                  "name": "Elizabeth",
+                  "position": 2
                 }
               },
               {
@@ -314,7 +318,8 @@
           "lane": {
             "name": "A",
             "competitor": {
-              "name": "Bill"
+              "name": "Bill",
+              "position": 1
             }
           }
         }
@@ -331,7 +336,8 @@
         ],
         "example": {
           "competitor": {
-            "name": "Bill"
+            "name": "Bill",
+            "position": 1
           }
         }
       }

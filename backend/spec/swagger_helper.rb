@@ -58,7 +58,7 @@ RSpec.configure do |config|
               updated_at: { type: :string, format: :'date-time' },
               competitor: { '$ref': '#/components/schemas/Competitor', nullable: true }
             },
-            required: [ 'id', 'name', 'sort', 'created_at', 'updated_at' ]
+            required: [ 'id', 'name', 'race_id', 'sort', 'created_at', 'updated_at' ]
           },
           Competitor: {
             type: :object,
@@ -86,10 +86,10 @@ RSpec.configure do |config|
               race: {
                 name: 'Test Race 123',
                 lanes: [
-                  { name: 'A', competitor: { name: 'Bill' } },
-                  { name: 'B', competitor: { name: 'Ted' } },
+                  { name: 'A', competitor: { name: 'Bill', position: 3 } },
+                  { name: 'B', competitor: { name: 'Ted', position: 1 } },
                   { name: 'C', competitor: { name: 'Joanna' } },
-                  { name: 'D', competitor: { name: 'Elizabeth' } },
+                  { name: 'D', competitor: { name: 'Elizabeth', position: 2 } },
                   { name: 'E', competitor: { name: 'Rufus' } },
                 ]
               }
@@ -107,6 +107,7 @@ RSpec.configure do |config|
                 name: 'A',
                 competitor: {
                   name: 'Bill',
+                  position: 1
                 }
               }
             },
@@ -120,6 +121,7 @@ RSpec.configure do |config|
             example: {
               competitor: {
                 name: 'Bill',
+                position: 1
               }
             },
           },

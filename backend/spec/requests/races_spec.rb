@@ -1,5 +1,7 @@
 require 'swagger_helper'
 
+INVALID_ID = 99999999999
+
 describe 'races', type: :request do
   before do
     @london = create(:london_marathon)
@@ -69,7 +71,7 @@ describe 'races', type: :request do
         run_test!
       end
 
-      response(422, 'invalid request', document: false) do
+      response(422, 'invalid number of lanes', document: false) do
         let(:race) {
           {
             name: 'Invalid Race',
@@ -98,7 +100,7 @@ describe 'races', type: :request do
         run_test!
       end
       response(404, 'Race not found') do
-        let(:id) { 555 }
+        let(:id) { INVALID_ID }
         run_test!
       end
     end
@@ -130,8 +132,77 @@ describe 'races', type: :request do
           expect(data['lanes'][2]['name']).to eq('Updated Lane')
         end
       end
+
+      response(200, 'Update finish places', document: false) do
+        let(:id) { @london.id }
+        let(:race) do
+          {
+            race: {
+              lanes: [
+                { id: @london.lanes[4].id, competitor: { position: 1 } },
+                { id: @london.lanes[3].id, competitor: { position: 2 } },
+                { id: @london.lanes[7].id, competitor: { position: 3 } },
+              ]
+            }
+          }
+        end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['lanes'].length).to eq(10)
+          expect(data['lanes'][4]['competitor']['position']).to eq(1)
+          expect(data['lanes'][3]['competitor']['position']).to eq(2)
+          expect(data['lanes'][7]['competitor']['position']).to eq(3)
+        end
+      end
+
+      response(200, 'Accepts valid ties', document: false) do
+        let(:id) { @boston.id }
+        let(:race) do
+          {
+            race: {
+              lanes: [
+                { id: @boston.lanes[2].id, competitor: { position: 1 } },
+                { id: @boston.lanes[1].id, competitor: { position: 1 } },
+                { id: @boston.lanes[5].id, competitor: { position: 3 } },
+                { id: @boston.lanes[4].id, competitor: { position: 4 } },
+              ]
+            }
+          }
+        end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['lanes'].length).to eq(7)
+          expect(data['lanes'][2]['competitor']['position']).to eq(1)
+          expect(data['lanes'][1]['competitor']['position']).to eq(1)
+          expect(data['lanes'][5]['competitor']['position']).to eq(3)
+          expect(data['lanes'][4]['competitor']['position']).to eq(4)
+        end
+      end
+
+      response(422, 'Rejects invalid ties', document: false) do
+        let(:id) { @boston.id }
+        let(:race) do
+          {
+            race: {
+              lanes: [
+                { id: @boston.lanes[2].id, competitor: { position: 1 } },
+                { id: @boston.lanes[1].id, competitor: { position: 1 } },
+                # This one should be 3rd
+                { id: @boston.lanes[5].id, competitor: { position: 2 } },
+                # This one should be 4th
+                { id: @boston.lanes[4].id, competitor: { position: 3 } },
+              ]
+            }
+          }
+        end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['competitor']).to eq(['is in an invalid position. Expected 3 got 2', 'is in an invalid position. Expected 4 got 3'])
+        end
+      end
+
       response(404, 'Race not found') do
-        let(:id) { 555 }
+        let(:id) { INVALID_ID }
         let(:race) { { race: { name: 'Updated Race' } } }
         run_test!
       end
@@ -145,10 +216,11 @@ describe 'races', type: :request do
 
         run_test! do
           expect(Race.count).to eq(@initial_race_count - 1)
+          expect(Race.find_by_id(@berlin.id)).to be_nil
         end
       end
       response(404, 'Race not found') do
-        let(:id) { 555 }
+        let(:id) { INVALID_ID }
         run_test!
       end
     end
