@@ -6,7 +6,7 @@ RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
   # NOTE: If you're using the rswag-api to serve API descriptions, you'll need
   # to ensure that it's configured to serve Swagger from the same folder
-  config.openapi_root = Rails.root.join('openapi').to_s
+  config.openapi_root = Rails.root.join('public').to_s
 
   # Define one or more Swagger documents and provide global metadata for each one
   # When you run the 'rswag:specs:swaggerize' rake task, the complete Swagger will
@@ -15,7 +15,7 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a openapi_spec tag to the
   # the root example_group in your specs, e.g. describe '...', openapi_spec: 'v2/swagger.json'
   config.openapi_specs = {
-    'v1/openapi.json' => {
+    'openapi.json' => {
       openapi: '3.0.1',
       info: {
         title: 'Rēhi API V1',
@@ -83,16 +83,14 @@ RSpec.configure do |config|
             },
             required: [ 'name', 'lanes' ],
             example: {
-              race: {
-                name: 'Test Race 123',
-                lanes: [
-                  { name: 'A', competitor: { name: 'Bill', position: 3 } },
-                  { name: 'B', competitor: { name: 'Ted', position: 1 } },
-                  { name: 'C', competitor: { name: 'Joanna' } },
-                  { name: 'D', competitor: { name: 'Elizabeth', position: 2 } },
-                  { name: 'E', competitor: { name: 'Rufus' } },
-                ]
-              }
+              name: 'Test Race 123',
+              lanes: [
+                { name: 'A', competitor: { name: 'Bill', position: 3 } },
+                { name: 'B', competitor: { name: 'Ted', position: 1 } },
+                { name: 'C', competitor: { name: 'Joanna' } },
+                { name: 'D', competitor: { name: 'Elizabeth', position: 2 } },
+                { name: 'E', competitor: { name: 'Rufus' } },
+              ]
             }
           },
           LaneInput: {

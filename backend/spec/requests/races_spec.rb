@@ -25,7 +25,12 @@ describe 'races', type: :request do
       tags 'Races'
       consumes 'application/json'
       produces 'application/json'
-      parameter name: :race, in: :body, schema: { '$ref': '#/components/schemas/RaceInput' }
+      parameter name: :race, in: :body, schema: {
+        type: :object,
+        properties: {
+          race: { '$ref': '#/components/schemas/RaceInput' }
+        }
+      }
 
       response(201, 'Created race') do
         schema '$ref': '#/components/schemas/Race'
@@ -74,10 +79,12 @@ describe 'races', type: :request do
       response(422, 'invalid number of lanes', document: false) do
         let(:race) {
           {
-            name: 'Invalid Race',
-            lanes: [
-              { name: 'A', competitor: { name: 'Bill' } },
-            ]
+            race: {
+              name: 'Invalid Race',
+              lanes: [
+                { name: 'A', competitor: { name: 'Bill' } },
+              ]
+            }
           }
         }
         run_test! do |response|
@@ -109,7 +116,12 @@ describe 'races', type: :request do
       tags 'Races'
       consumes 'application/json'
       produces 'application/json'
-      parameter name: :race, in: :body, schema: { '$ref': '#/components/schemas/RaceInput' }
+      parameter name: :race, in: :body, schema: {
+        type: :object,
+        properties: {
+          race: { '$ref': '#/components/schemas/RaceInput' }
+        }
+      }
 
       response(200, 'Race was updated') do
         let(:id) { @london.id }
