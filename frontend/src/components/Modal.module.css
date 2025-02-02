@@ -14,6 +14,29 @@
 }
 
 .modal {
-  max-height: 80vh;
-  overflow: auto;
+  position: relative;
+  padding: 0 ! important;
+  h1 {
+    --margin: calc(var(--pad) * -1);
+    margin: var(--margin)  var(--margin) var(--pad-small) var(--margin);
+    padding: var(--pad-small) var(--pad);
+    background: rgba(0, 0, 0, 0.1);
+  }
+  .content {
+    max-height: 80vh;
+    overflow: auto;
+    padding: var(--pad);
+  }
+}
+.closeButton {
+  position: absolute;
+  z-index: 100;
+  right: var(--pad);
+  top: var(--pad);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-weight: bold;
+  line-height: 18px;
+  overflow: hidden;
 }

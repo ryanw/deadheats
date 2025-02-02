@@ -32,8 +32,10 @@ export function Modal(props: ModalProps) {
   return (
     <div className={styles.bg} onClick={onClickBackground}>
       <Panel className={classes}>
-        {props.children}
-        <button type="button" onClick={close}>Close</button>
+        <button type="button" onClick={close} className={styles.closeButton}>X</button>
+        <div className={styles.content}>
+          {props.children}
+        </div>
       </Panel>
     </div>
   );

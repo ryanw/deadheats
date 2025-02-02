@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CompetitorInput, LaneInput, RaceInput } from '../api';
 import styles from './RaceForm.module.css';
 
@@ -21,6 +21,8 @@ export interface RaceFormProps {
 }
 
 export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
+  const [laneAdded, setLaneAdded] = useState(false);
+  
   const onChangeInput = useCallback((e: React.ChangeEvent) => {
     const el = e.target as HTMLInputElement;
     const key = el.name;
@@ -51,6 +53,7 @@ export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
   const onClickAddLane = useCallback((e: React.SyntheticEvent) => {
     const lanes = updateLaneNames([...input.lanes, { ...DEFAULT_LANE }]);
     onChange(e, { ...input, lanes });
+    setLaneAdded(true);
   }, [input]);
 
   const onClickRemoveLane = useCallback((e: React.SyntheticEvent, index: number) => {
@@ -61,32 +64,32 @@ export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
     }
   }, [input]);
 
-
   const lanes = input.lanes.filter(lane => lane.name !== null);
   const laneCount = lanes.length;
+  const focusName = !laneAdded && input.name == '';
+  const focusLane = laneAdded;
   return (
     <div className={styles.form}>
-      <h1>{input.name}</h1>
+      <h1>{input.name.toString().trim() || 'Untitled race'}</h1>
       <form onSubmit={onSubmitForm}>
+        <div className={styles.toolbar}>
+          <button type="button" onClick={onClickAddLane}>Add Lane</button>
+          <button type="submit">Save</button>
+        </div>
+
         <ErrorMessage error={error} />
         <div>
           <label htmlFor="race-name">Name</label>
-          <input id="race-name" type="text" name="name" value={input.name} onChange={onChangeInput} />
+          <input autoFocus={focusName} id="race-name" type="text" name="name" value={input.name} onChange={onChangeInput} />
         </div>
         {lanes.map((lane, i) =>
           <div key={lane.id ?? `lane-${i}`}>
-            {lane.name}:
-            <input name="name" value={lane.competitor?.name ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
+            <label htmlFor={`lane-${i}`}>{lane.name}</label>
+            <input id={`lane-${i}`} autoFocus={focusLane && i === lanes.length - 1} name="name" value={lane.competitor?.name ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
             <input name="position" type="number" step="1" min="1" max={laneCount} value={lane.competitor?.position ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
             <button type="button" onClick={(e) => onClickRemoveLane(e, i)}>Remove</button>
           </div>
         )}
-        <div>
-          <button type="button" onClick={onClickAddLane}>Add Lane</button>
-        </div>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
       </form>
     </div>
   );

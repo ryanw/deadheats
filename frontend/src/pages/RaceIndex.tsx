@@ -15,6 +15,12 @@ export default function RaceIndex() {
   const navigate = useNavigate();
   const isNew = !!useMatch('/races/new');
   const isIndex = !!useMatch('/');
+  
+  const onCloseEdit = () => {
+    if (confirm("Discard changes?")) {
+      navigate('/')
+    }
+  };
 
   // Refetch when navigating back to index
   useEffect(() => {
@@ -27,14 +33,14 @@ export default function RaceIndex() {
   if (isNew) {
     // Creating a new race
     modal = (
-      <Modal onClose={() => navigate('/')}>
+      <Modal onClose={onCloseEdit}>
         <RaceNewForm />
       </Modal>
     );
   } else if (raceId) {
     // Editing existing race
     modal = (
-      <Modal onClose={() => navigate('/')}>
+      <Modal onClose={onCloseEdit}>
         <RaceEditForm raceId={raceId} />
       </Modal>
     );

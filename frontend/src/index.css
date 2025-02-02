@@ -5,6 +5,7 @@
   --on-secondary-color: #fff;
   --pad: 24px;
   --pad-small: 16px;
+  --pad-tiny: 8px;
   --border-radius: 12px;
   --background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
   --on-background: #242424;
@@ -13,7 +14,7 @@
   --alt-row-color: hsla(12, 100%, 66%, 0.15);
   --hover-row-color: hsla(12, 100%, 66%, 0.3);
 
-  --panel-color: rgba(255, 255, 255, 0.9);
+  --panel-color: hsl(12, 4%, 97%);
   --on-panel-color: #242424;
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -50,5 +51,16 @@ button {
   &:hover {
     background: var(--secondary-color);
     color: var(--on-secondary-color);
+  }
+}
+input {
+  border: 1px solid var(--secondary-color);
+  padding: var(--pad-tiny);
+  margin: var(--pad-tiny);
+  border-radius: 6px;
+  &:focus {
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+    outline: 0;
   }
 }

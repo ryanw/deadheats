@@ -1,5 +1,16 @@
 .form {
 }
+.toolbar {
+  position: sticky;
+  top: calc(var(--pad) * -1);
+  background: var(--panel-color);
+  display: flex;
+  button {
+    margin-right: var(--pad-small);
+  }
+
+  padding: var(--pad-small) 0;
+}
 
 .error {
   border: 1px solid #d00;
