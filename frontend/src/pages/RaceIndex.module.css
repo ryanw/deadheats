@@ -3,6 +3,62 @@
   margin: 2em auto;
   table {
     width: 100%;
+    margin-top: var(--pad);
+    border-collapse: collapse;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    th {
+      background: var(--primary-color);
+      color: var(--on-primary-color);
+      text-align: left;
+      padding: calc(var(--pad-small)/2) var(--pad-small);
+    }
+    td {
+      > a {
+        padding: calc(var(--pad-small)/2) var(--pad-small);
+        display: block;
+      }
+    }
+    tr button {
+      visibility: hidden;
+    }
+    tr:hover button {
+      visibility: visible;
+    }
+    tr:nth-child(even) {
+      background: var(--alt-row-color);
+    }
+    tr:has(a:hover) {
+      background: var(--hover-row-color);
+    }
+  }
+}
+
+.startButton {
+  position: relative;
+  top: 0px;
+  display: block;
+  margin: auto;
+  width: 200px;
+  font-size: 1.5em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  background: var(--button-color);
+  color: var(--on-button-color);
+  padding: var(--pad);
+  border-radius: var(--border-radius);
+  text-align: center;
+  transition: 120ms all;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    top: -3px;
+  }
+
+  &:active {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    top: -2px;
   }
 }
 
@@ -13,14 +69,16 @@
     content: "Loading...";
 
     position: absolute;
-    top: 2em;
+    top: 4em;
     left: 50%;
     margin-left: -60px;
     width: 120px;
     text-align: center;
     background: var(--panel-color);
     color: var(--on-panel-color);
-    padding: var(--pad);
+    padding: var(--pad-small);
     border-radius: var(--border-radius);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    font-size: 1.2em;
   }
 }

@@ -1,16 +1,17 @@
-import { NavLink, useLocation, useMatch, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useMatch, useNavigate, useParams } from 'react-router-dom';
 import classNames from 'classnames';
-import { useQuery } from '../api';
+import { Race, useMutation, useQuery } from '../api';
 import styles from './RaceIndex.module.css';
 import Modal from '../components/Modal';
 import RaceEditForm from './RaceEditForm';
 import Panel from '../components/Panel';
 import RaceNewForm from './RaceNewForm';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export default function RaceIndex() {
   const { raceId } = useParams();
-  const { data: races, error, isLoading, refetch } = useQuery('get', '/races');
+  const { data: races = [], error, isLoading, refetch } = useQuery('get', '/races');
+  const { mutate: deleteRace, isSuccess: wasDeleted } = useMutation('delete', '/races/{id}');
   const navigate = useNavigate();
   const isNew = !!useMatch('/races/new');
   const isIndex = !!useMatch('/');
@@ -46,34 +47,65 @@ export default function RaceIndex() {
     );
   }
 
+  useEffect(() => {
+    refetch();
+  }, [wasDeleted]);
+
+  const onClickDelete = useCallback((id: Race['id']) => {
+    const race = races.find(race => race.id === id);
+    const name = race?.name ?? 'untitled';
+    if (confirm(`Are you sure you want to delete the ${name} race?`)) {
+      deleteRace({ params: { path: { id: id.toString() } } });
+    }
+  }, [races]);
+
   return (
     <>
       {modal}
 
       <Panel className={classNames(styles.page, isLoading && styles.loading)}>
-        <NavLink to="/races/new">Start a Race</NavLink>
-        <p>Previous races are below.</p>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Competitors</th>
-              <th>Lanes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {races?.map(race =>
-              <tr key={race.id}>
-                <td><NavLink to={`/races/${race.id}`}>{race.id}</NavLink></td>
-                <td><NavLink to={`/races/${race.id}`}>{race.name}</NavLink></td>
-                <td>{race.lanes.filter(l => !!l.competitor).length} competitors</td>
-                <td>{race.lanes.length} lanes</td>
+        <h1>Rēhi Race Management Software</h1>
+        <p>Would you like to start a race? Click the button below.</p>
+        <NavLink to="/races/new" className={styles.startButton}>Start New Race</NavLink>
+        {races.length > 0 &&
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Competitors</th>
+                <th>Finishers</th>
+                <th>Empty Lanes</th>
+                <th>Total Lanes</th>
+                <th>Created</th>
+                <th></th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {races.map(race =>
+                <tr key={race.id}>
+                  <td><NavLink to={`/races/${race.id}`}>{race.id}</NavLink></td>
+                  <td><NavLink to={`/races/${race.id}`}>{race.name}</NavLink></td>
+                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !!l.competitor).length}</NavLink></td>
+                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !!l.competitor?.position).length}</NavLink></td>
+                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !l.competitor).length}</NavLink></td>
+                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.length}</NavLink></td>
+                  <td><NavLink to={`/races/${race.id}`}>{formatDateString(race.created_at)}</NavLink></td>
+                  <td><button type="button" onClick={() => onClickDelete(race.id)}>🗑️</button></td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        }
       </Panel>
     </>
   );
+}
+
+function formatDateString(dateString: string): string {
+  const date = new Date(Date.parse(dateString));
+  if (isNaN(date.valueOf())) {
+    return "";
+  }
+  return date.toLocaleString();
 }
