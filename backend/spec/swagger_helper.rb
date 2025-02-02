@@ -65,10 +65,11 @@ RSpec.configure do |config|
             properties: {
               id: { type: :integer },
               name: { type: :string },
+              position: { type: :integer, nullable: true },
               created_at: { type: :string, format: :'date-time' },
               updated_at: { type: :string, format: :'date-time' },
             },
-            required: [ 'id', 'name', 'created_at', 'updated_at' ]
+            required: [ 'id', 'name', 'position', 'created_at', 'updated_at' ]
           },
 
           # Inputs
@@ -96,6 +97,7 @@ RSpec.configure do |config|
           LaneInput: {
             type: :object,
             properties: {
+              id: { type: :integer },
               name: { type: :string },
               competitor: { '$ref': '#/components/schemas/CompetitorInput', nullable: true },
             },
@@ -113,7 +115,9 @@ RSpec.configure do |config|
           CompetitorInput: {
             type: :object,
             properties: {
+              id: { type: :integer },
               name: { type: :string },
+              position: { type: :integer, nullable: true },
             },
             required: [ 'name' ],
             example: {

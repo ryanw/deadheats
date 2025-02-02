@@ -236,6 +236,10 @@
           "name": {
             "type": "string"
           },
+          "position": {
+            "type": "integer",
+            "nullable": true
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -248,6 +252,7 @@
         "required": [
           "id",
           "name",
+          "position",
           "created_at",
           "updated_at"
         ]
@@ -311,6 +316,9 @@
       "LaneInput": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer"
+          },
           "name": {
             "type": "string"
           },
@@ -335,8 +343,15 @@
       "CompetitorInput": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer"
+          },
           "name": {
             "type": "string"
+          },
+          "position": {
+            "type": "integer",
+            "nullable": true
           }
         },
         "required": [

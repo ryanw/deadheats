@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styles from './Modal.module.css';
+import Panel from './Panel';
 
 export default Modal;
 
@@ -30,10 +31,10 @@ export function Modal(props: ModalProps) {
 
   return (
     <div className={styles.bg} onClick={onClickBackground}>
-      <div className={classes}>
+      <Panel className={classes}>
         {props.children}
         <button type="button" onClick={close}>Close</button>
-      </div>
+      </Panel>
     </div>
   );
 }

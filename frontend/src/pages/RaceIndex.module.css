@@ -1,7 +1,6 @@
 .page {
   max-width: 1024px;
   margin: 2em auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   table {
     width: 100%;
   }

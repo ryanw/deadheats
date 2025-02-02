@@ -13,8 +13,6 @@
 }
 
 .modal {
-  background: var(--panel-color);
-  color: var(--on-panel-color);
-  padding: var(--pad);
-  border-radius: var(--border-radius);
+  max-height: 80vh;
+  overflow: auto;
 }

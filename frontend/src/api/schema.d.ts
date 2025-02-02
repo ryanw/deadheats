@@ -212,6 +212,7 @@ export interface components {
         Competitor: {
             id: number;
             name: string;
+            position: number | null;
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -269,6 +270,7 @@ export interface components {
          *       }
          *     } */
         LaneInput: {
+            id?: number;
             name: string;
             competitor?: components["schemas"]["CompetitorInput"];
         };
@@ -279,7 +281,9 @@ export interface components {
          *       }
          *     } */
         CompetitorInput: {
+            id?: number;
             name: string;
+            position?: number | null;
         };
     };
     responses: never;
