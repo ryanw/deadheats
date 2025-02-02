@@ -77,6 +77,7 @@ export default function RaceIndex() {
           <table>
             <thead>
               <tr>
+                <th></th>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Competitors</th>
@@ -88,10 +89,11 @@ export default function RaceIndex() {
             <tbody>
               {races.map(race =>
                 <tr key={race.id}>
+                  <td><NavLink to={`/races/${race.id}`}>{raceIcon(race)}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{race.id}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{race.name}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !!l.competitor).length}</NavLink></td>
-                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !l.competitor).length}</NavLink></td>
+                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !!l.competitor?.position).length}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{formatDateString(race.created_at)}</NavLink></td>
                   <td><button type="button" onClick={() => onClickDelete(race.id)}>🗑️</button></td>
                 </tr>
@@ -110,4 +112,16 @@ function formatDateString(dateString: string): string {
     return "";
   }
   return date.toLocaleString();
+}
+
+function raceIcon(race: Race): string {
+  const isFinished = race.lanes.every(r => !!r.competitor?.position);
+  const isStarted = race.lanes.some(r => !!r.competitor?.position);
+  if (isFinished) {
+    return '🥇';
+  } else if (isStarted) {
+    return '🏃';
+  } else {
+    return '⏱️';
+  }
 }

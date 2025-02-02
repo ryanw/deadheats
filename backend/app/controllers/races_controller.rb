@@ -3,7 +3,7 @@ class RacesController < ApplicationController
 
   # GET /races
   def index
-    @races = Race.includes(lanes: [:competitor]).all
+    @races = Race.includes(lanes: [:competitor]).order(created_at: :desc).all
 
     render json: @races, include: race_includes
   end
