@@ -89,7 +89,7 @@ describe 'races', type: :request do
         }
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['lanes']).to eq(['must have at least 2 lanes'])
+          expect(data['lanes']).to eq(['must have at least 2'])
         end
       end
     end
@@ -209,7 +209,7 @@ describe 'races', type: :request do
         end
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['competitor']).to eq(['is in an invalid position. Expected 3 got 2', 'is in an invalid position. Expected 4 got 3'])
+          expect(data['competitor.position']).to eq(['is invalid. Expected 3 got 2', 'is invalid. Expected 4 got 3'])
         end
       end
 
@@ -256,7 +256,7 @@ describe 'races', type: :request do
         run_test!
       end
 
-      response(200, 'Removes a new lane', document: false) do
+      response(200, 'Removes a lane', document: false) do
         let(:id) { @berlin.id }
         let(:race) do
           {

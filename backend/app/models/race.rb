@@ -11,7 +11,7 @@ class Race < ApplicationRecord
   private
     def validate_minimum_lane_count
       if lanes.size < 2
-        errors.add(:lanes, 'must have at least 2 lanes')
+        errors.add(:lanes, 'must have at least 2')
       end
     end
 
@@ -24,7 +24,7 @@ class Race < ApplicationRecord
 
       for lane in sorted_lanes
         if lane.competitor.position != next_place and lane.competitor.position != prev_place
-          errors.add(:competitor, "is in an invalid position. Expected #{next_place} got #{lane.competitor.position}")
+          errors.add(:'competitor.position', "is invalid. Expected #{next_place} got #{lane.competitor.position}")
         end
 
         next_place += 1

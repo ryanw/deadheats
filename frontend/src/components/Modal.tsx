@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import styles from './Modal.module.css';
 import Panel from './Panel';
 
@@ -32,7 +31,7 @@ export function Modal(props: ModalProps) {
   return (
     <div className={styles.bg} onClick={onClickBackground}>
       <Panel className={classes}>
-        <button type="button" onClick={close} className={styles.closeButton}>X</button>
+        {props.onClose && <button type="button" onClick={close} className={styles.closeButton}>X</button>}
         <div className={styles.content}>
           {props.children}
         </div>

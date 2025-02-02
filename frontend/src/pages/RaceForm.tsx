@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CompetitorInput, LaneInput, RaceInput } from '../api';
 import styles from './RaceForm.module.css';
 
@@ -22,7 +22,13 @@ export interface RaceFormProps {
 
 export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
   const [laneAdded, setLaneAdded] = useState(false);
-  
+
+  const indexedLanes = input.lanes.map((lane, i) => [lane, i] as [LaneInput, number]);
+  const activeLanes = indexedLanes.filter(([lane]) => lane.name !== null);
+  const laneCount = activeLanes.length;
+  const focusName = !laneAdded && input.name == '';
+  const focusLane = laneAdded;
+
   const onChangeInput = useCallback((e: React.ChangeEvent) => {
     const el = e.target as HTMLInputElement;
     const key = el.name;
@@ -34,15 +40,15 @@ export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
     const el = e.target as HTMLInputElement;
     const key = el.name;
     const value = el.type === 'number' ? parseInt(el.value, 10) : el.value;
-    const lanes = [...input.lanes];
-    lanes[laneIndex] = {
-      ...lanes[laneIndex],
+    const newLanes = [...input.lanes];
+    newLanes[laneIndex] = {
+      ...newLanes[laneIndex],
       competitor: {
-        ...(lanes[laneIndex].competitor || DEFAULT_COMPETITOR),
+        ...(newLanes[laneIndex].competitor || DEFAULT_COMPETITOR),
         [key]: value,
       }
     };
-    onChange(e, { ...input, lanes });
+    onChange(e, { ...input, lanes: newLanes });
   }, [input, onChange]);
 
   const onSubmitForm = useCallback((e: React.FormEvent) => {
@@ -51,23 +57,20 @@ export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
   }, [input, onSubmit]);
 
   const onClickAddLane = useCallback((e: React.SyntheticEvent) => {
-    const lanes = updateLaneNames([...input.lanes, { ...DEFAULT_LANE }]);
-    onChange(e, { ...input, lanes });
+    const newLanes = updateLaneNames([...input.lanes, { ...DEFAULT_LANE }]);
+    onChange(e, { ...input, lanes: newLanes });
     setLaneAdded(true);
   }, [input]);
 
   const onClickRemoveLane = useCallback((e: React.SyntheticEvent, index: number) => {
     if (confirm(`Are you sure you want to remove ${input.lanes[index]?.name}?`)) {
-      const lanes = [...input.lanes];
-      lanes[index].name = null;
-      onChange(e, { ...input, lanes });
+      let newLanes = [...input.lanes];
+      newLanes[index].name = null;
+      newLanes = updateLaneNames(newLanes);
+      onChange(e, { ...input, lanes: newLanes });
     }
   }, [input]);
 
-  const lanes = input.lanes.filter(lane => lane.name !== null);
-  const laneCount = lanes.length;
-  const focusName = !laneAdded && input.name == '';
-  const focusLane = laneAdded;
   return (
     <div className={styles.form}>
       <h1>{input.name.toString().trim() || 'Untitled race'}</h1>
@@ -82,10 +85,10 @@ export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
           <label htmlFor="race-name">Name</label>
           <input autoFocus={focusName} id="race-name" type="text" name="name" value={input.name} onChange={onChangeInput} />
         </div>
-        {lanes.map((lane, i) =>
+        {activeLanes.map(([lane, i]) =>
           <div key={lane.id ?? `lane-${i}`}>
             <label htmlFor={`lane-${i}`}>{lane.name}</label>
-            <input id={`lane-${i}`} autoFocus={focusLane && i === lanes.length - 1} name="name" value={lane.competitor?.name ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
+            <input id={`lane-${i}`} autoFocus={focusLane && i === activeLanes.length - 1} name="name" value={lane.competitor?.name ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
             <input name="position" type="number" step="1" min="1" max={laneCount} value={lane.competitor?.position ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
             <button type="button" onClick={(e) => onClickRemoveLane(e, i)}>Remove</button>
           </div>
@@ -106,22 +109,47 @@ export function ErrorMessage({ error }: ErrorMessageProps) {
 
   return (
     <p className={styles.error}>
-      Error saving: {formatErrorMessage(error)}
+      Error: {formatErrorMessage(error)}
     </p>
   );
 }
 
 function updateLaneNames(lanes: LaneInput[]): LaneInput[] {
-  return lanes.map((lane, i) => ({
-    ...lane,
-    // Nulls are deleted lanes
-    name: lane.name === null ? null : `Lane ${i + 1}`,
-  }));
+  let i = 0;
+  return lanes.map((lane) => {
+    const isDeleted = lane.name === null;
+    if (!isDeleted) {
+      i += 1;
+    }
+    return {
+      ...lane,
+      // Nulls are deleted lanes
+      name: isDeleted ? null : `Lane ${i}`,
+    }
+  });
 }
 
 function formatErrorMessage(error: object): string {
   if ('error' in error && typeof error.error === 'string') {
     return error.error;
+  }
+
+  if ('name' in error) {
+    return 'Race requires a nane';
+  }
+
+  if ('lanes.competitor' in error || 'lanes.competitor.name' in error) {
+    return 'Every lane requires a competitor';
+  }
+
+  if ('competitor.position' in error) {
+    const [msg] = error['competitor.position'] as string[];
+    return 'Position ' + msg;
+  }
+
+  if ('lanes' in error) {
+    const [msg] = error['lanes'] as string[];
+    return 'Lanes: ' + msg;
   }
 
   return 'Unknown Error';

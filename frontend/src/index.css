@@ -1,8 +1,9 @@
 :root {
-  --primary-color: hsl(12, 100%, 66%);
+  --primary-color: hsl(12, 80%, 50%);
   --on-primary-color: #fff;
-  --secondary-color: #feb47b;
+  --secondary-color: hsl(30, 95%, 70%);
   --on-secondary-color: #fff;
+
   --pad: 24px;
   --pad-small: 16px;
   --pad-tiny: 8px;
