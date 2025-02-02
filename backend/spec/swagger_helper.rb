@@ -51,14 +51,14 @@ RSpec.configure do |config|
             properties: {
               id: { type: :integer },
               race_id: { type: :integer },
-              competitor_id: { type: :integer, nullable: true },
+              competitor_id: { type: :integer },
               name: { type: :string },
               sort: { type: :integer },
               created_at: { type: :string, format: :'date-time' },
               updated_at: { type: :string, format: :'date-time' },
-              competitor: { '$ref': '#/components/schemas/Competitor', nullable: true }
+              competitor: { '$ref': '#/components/schemas/Competitor' }
             },
-            required: [ 'id', 'name', 'race_id', 'sort', 'created_at', 'updated_at' ]
+            required: [ 'id', 'name', 'competitor_id', 'competitor', 'race_id', 'sort', 'created_at', 'updated_at' ]
           },
           Competitor: {
             type: :object,

@@ -81,8 +81,6 @@ export default function RaceIndex() {
                 <th>Name</th>
                 <th>Competitors</th>
                 <th>Finishers</th>
-                <th>Empty Lanes</th>
-                <th>Total Lanes</th>
                 <th>Created</th>
                 <th></th>
               </tr>
@@ -93,9 +91,7 @@ export default function RaceIndex() {
                   <td><NavLink to={`/races/${race.id}`}>{race.id}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{race.name}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !!l.competitor).length}</NavLink></td>
-                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !!l.competitor?.position).length}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{race.lanes.filter(l => !l.competitor).length}</NavLink></td>
-                  <td><NavLink to={`/races/${race.id}`}>{race.lanes.length}</NavLink></td>
                   <td><NavLink to={`/races/${race.id}`}>{formatDateString(race.created_at)}</NavLink></td>
                   <td><button type="button" onClick={() => onClickDelete(race.id)}>🗑️</button></td>
                 </tr>

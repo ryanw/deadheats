@@ -151,9 +151,9 @@ describe 'races', type: :request do
           {
             race: {
               lanes: [
-                { id: @london.lanes[4].id, competitor: { position: 1 } },
-                { id: @london.lanes[3].id, competitor: { position: 2 } },
-                { id: @london.lanes[7].id, competitor: { position: 3 } },
+                { id: @london.lanes[4].id, competitor: { name: 'Person 5', position: 1 } },
+                { id: @london.lanes[3].id, competitor: { name: 'Person 4', position: 2 } },
+                { id: @london.lanes[7].id, competitor: { name: 'Person 8', position: 3 } },
               ]
             }
           }
@@ -173,10 +173,10 @@ describe 'races', type: :request do
           {
             race: {
               lanes: [
-                { id: @boston.lanes[2].id, competitor: { position: 1 } },
-                { id: @boston.lanes[1].id, competitor: { position: 1 } },
-                { id: @boston.lanes[5].id, competitor: { position: 3 } },
-                { id: @boston.lanes[4].id, competitor: { position: 4 } },
+                { id: @boston.lanes[2].id, competitor: { name: 'Person 3', position: 1 } },
+                { id: @boston.lanes[1].id, competitor: { name: 'Person 2', position: 1 } },
+                { id: @boston.lanes[5].id, competitor: { name: 'Person 6', position: 3 } },
+                { id: @boston.lanes[4].id, competitor: { name: 'Person 5', position: 4 } },
               ]
             }
           }
@@ -227,7 +227,7 @@ describe 'races', type: :request do
               lanes: [
                 { name: "Lane 1", id: @berlin.lanes[0].id },
                 { name: "Lane 2", id: @berlin.lanes[1].id },
-                { name: "New Lane" },
+                { name: "New Lane", competitor: { name: "New Person" } },
                 { name: "Lane 3", id: @berlin.lanes[2].id },
               ]
             }
@@ -237,6 +237,23 @@ describe 'races', type: :request do
           data = JSON.parse(response.body)
           expect(data['lanes'].length).to eq(4)
         end
+      end
+
+      response(422, 'Rejects lane without competitor', document: false) do
+        let(:id) { @berlin.id }
+        let(:race) do
+          {
+            race: {
+              lanes: [
+                { name: "Lane 1", id: @berlin.lanes[0].id },
+                { name: "Lane 2", id: @berlin.lanes[1].id },
+                { name: "New Lane" },
+                { name: "Lane 3", id: @berlin.lanes[2].id },
+              ]
+            }
+          }
+        end
+        run_test!
       end
 
       response(200, 'Removes a new lane', document: false) do

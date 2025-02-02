@@ -1,10 +1,10 @@
 class Race < ApplicationRecord
   has_many :lanes, -> { order(:sort) }, dependent: :destroy
   accepts_nested_attributes_for :lanes, allow_destroy: true
-  before_save :remove_empty_lanes
-  before_save :update_lane_sort
+  before_validation :remove_empty_lanes
+  before_validation :update_lane_sort
 
-  validates :name, presence: true, format: { with: /\S/, message: 'cannot be blank' }
+  validates :name, presence: true
   validate :validate_minimum_lane_count
   validate :validate_finish_places
 
