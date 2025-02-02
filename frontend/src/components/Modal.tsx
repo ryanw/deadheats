@@ -19,17 +19,8 @@ export function Modal(props: ModalProps) {
     props.onClose?.();
   }
 
-  function onClickBackground(e: React.MouseEvent) {
-    // Ignore clicks on the dialog
-    if (e.currentTarget !== e.target) {
-      return;
-    }
-
-    close();
-  }
-
   return (
-    <div className={styles.bg} onClick={onClickBackground}>
+    <div className={styles.bg}>
       <Panel className={classes}>
         {props.onClose && <button type="button" onClick={close} className={styles.closeButton}>X</button>}
         <div className={styles.content}>
