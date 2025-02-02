@@ -196,8 +196,7 @@
             "type": "integer"
           },
           "competitor_id": {
-            "type": "integer",
-            "nullable": true
+            "type": "integer"
           },
           "name": {
             "type": "string"
@@ -214,13 +213,14 @@
             "format": "date-time"
           },
           "competitor": {
-            "$ref": "#/components/schemas/Competitor",
-            "nullable": true
+            "$ref": "#/components/schemas/Competitor"
           }
         },
         "required": [
           "id",
           "name",
+          "competitor_id",
+          "competitor",
           "race_id",
           "sort",
           "created_at",

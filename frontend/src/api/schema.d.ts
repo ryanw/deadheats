@@ -200,14 +200,14 @@ export interface components {
         Lane: {
             id: number;
             race_id: number;
-            competitor_id?: number | null;
+            competitor_id: number;
             name: string;
             sort: number;
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
             updated_at: string;
-            competitor?: components["schemas"]["Competitor"];
+            competitor: components["schemas"]["Competitor"];
         };
         Competitor: {
             id: number;

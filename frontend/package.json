@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-api": "cd ../backend/; rake rswag:specs:swaggerize; cd -; npx openapi-typescript ../backend/public/openapi.json -o ./src/api/schema.d.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.66.0",
