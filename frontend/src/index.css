@@ -1,5 +1,6 @@
 :root {
   --pad: 24px;
+  --pad-small: 16px;
   --border-radius: 12px;
   --background: linear-gradient(to bottom, #ff7e5f, #feb47b);
   --on-background: #242424;

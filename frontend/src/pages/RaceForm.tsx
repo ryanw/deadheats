@@ -15,11 +15,12 @@ export type SubmitEventHandler = (e: React.FormEvent, changes: RaceInput) => voi
 
 export interface RaceFormProps {
   input: RaceInput;
+  error?: object | null;
   onChange: ChangeEventHandler;
   onSubmit: SubmitEventHandler;
 }
 
-export function RaceForm({ input, onChange, onSubmit }: RaceFormProps) {
+export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
   const onChangeInput = useCallback((e: React.ChangeEvent) => {
     const el = e.target as HTMLInputElement;
     const key = el.name;
@@ -54,21 +55,25 @@ export function RaceForm({ input, onChange, onSubmit }: RaceFormProps) {
 
   const onClickRemoveLane = useCallback((e: React.SyntheticEvent, index: number) => {
     if (confirm(`Are you sure you want to remove ${input.lanes[index]?.name}?`)) {
-      const lanes = updateLaneNames(input.lanes.filter((_, i) => i !== index));
+      const lanes = [...input.lanes];
+      lanes[index].name = null;
       onChange(e, { ...input, lanes });
     }
   }, [input]);
 
-  const laneCount = input.lanes.length;
+
+  const lanes = input.lanes.filter(lane => lane.name !== null);
+  const laneCount = lanes.length;
   return (
     <div className={styles.form}>
       <h1>{input.name}</h1>
       <form onSubmit={onSubmitForm}>
+        <ErrorMessage error={error} />
         <div>
           <label htmlFor="race-name">Name</label>
           <input id="race-name" type="text" name="name" value={input.name} onChange={onChangeInput} />
         </div>
-        {input.lanes.map((lane, i) =>
+        {lanes.map((lane, i) =>
           <div key={lane.id ?? `lane-${i}`}>
             {lane.name}:
             <input name="name" value={lane.competitor?.name ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
@@ -87,9 +92,34 @@ export function RaceForm({ input, onChange, onSubmit }: RaceFormProps) {
   );
 }
 
+export interface ErrorMessageProps {
+  error?: object | null;
+}
+
+export function ErrorMessage({ error }: ErrorMessageProps) {
+  if (!error) {
+    return null;
+  }
+
+  return (
+    <p className={styles.error}>
+      Error saving: {formatErrorMessage(error)}
+    </p>
+  );
+}
+
 function updateLaneNames(lanes: LaneInput[]): LaneInput[] {
   return lanes.map((lane, i) => ({
     ...lane,
-    name: `Lane ${i + 1}`
+    // Nulls are deleted lanes
+    name: lane.name === null ? null : `Lane ${i + 1}`,
   }));
+}
+
+function formatErrorMessage(error: object): string {
+  if ('error' in error && typeof error.error === 'string') {
+    return error.error;
+  }
+
+  return 'Unknown Error';
 }

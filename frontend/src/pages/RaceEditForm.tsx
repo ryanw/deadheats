@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Competitor, CompetitorInput, Lane, LaneInput, Race, RaceInput, useMutation, useQuery } from '../api';
 import { RaceForm, SubmitEventHandler } from './RaceForm';
+import { useNavigate } from 'react-router-dom';
 
 export default RaceEditForm;
 
@@ -9,17 +10,24 @@ export interface RaceFormProps {
 }
 
 export function RaceEditForm(props: RaceFormProps) {
+  const navigate = useNavigate();
   const raceId = props.raceId.toString();
   const { data } = useQuery('get', '/races/{id}', { params: { path: { id: raceId } } });
-  const { mutate } = useMutation('patch', '/races/{id}');
+  const { mutate, error, isSuccess } = useMutation('patch', '/races/{id}');
   const [changes, setChanges] = useState<RaceInput | null>(null);
-
   useEffect(() => {
     if (!data) {
       return;
     }
     setChanges(mapRaceToInput(data));
   }, [data]);
+
+  // Navigate to index after saving
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/');
+    }
+  }, [isSuccess]);
 
   const onSubmit: SubmitEventHandler = useCallback((_, changes) => {
     mutate({
@@ -30,7 +38,7 @@ export function RaceEditForm(props: RaceFormProps) {
 
   return (
     changes
-      ? <RaceForm input={changes} onSubmit={onSubmit} onChange={(_, changes) => setChanges(changes)} />
+      ? <RaceForm input={changes} error={error} onSubmit={onSubmit} onChange={(_, changes) => setChanges(changes)} />
       : <div>Loading...</div>
   );
 }

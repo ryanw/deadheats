@@ -1,2 +1,10 @@
 .form {
 }
+
+.error {
+  border: 1px solid #d00;
+  background: #eaa;
+  color: #300;
+  padding: var(--pad-small);
+  border-radius: var(--border-radius);
+}

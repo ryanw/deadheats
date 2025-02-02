@@ -1,4 +1,4 @@
-import { NavLink, useMatch, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useMatch, useNavigate, useParams } from 'react-router-dom';
 import classNames from 'classnames';
 import { useQuery } from '../api';
 import styles from './RaceIndex.module.css';
@@ -6,15 +6,24 @@ import Modal from '../components/Modal';
 import RaceEditForm from './RaceEditForm';
 import Panel from '../components/Panel';
 import RaceNewForm from './RaceNewForm';
+import { useEffect } from 'react';
 
 export default function RaceIndex() {
   const { raceId } = useParams();
-  const { data: races, error, isLoading } = useQuery('get', '/races');
+  const { data: races, error, isLoading, refetch } = useQuery('get', '/races');
   const navigate = useNavigate();
-  const path = useMatch('/races/new');
+  const isNew = !!useMatch('/races/new');
+  const isIndex = !!useMatch('/');
+
+  // Refetch when navigating back to index
+  useEffect(() => {
+    if (isIndex) {
+      refetch();
+    }
+  }, [isIndex]);
 
   let modal;
-  if (path) {
+  if (isNew) {
     // Creating a new race
     modal = (
       <Modal onClose={() => navigate('/')}>

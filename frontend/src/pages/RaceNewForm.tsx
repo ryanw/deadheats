@@ -12,7 +12,8 @@ const DEFAULT_INPUT: RaceInput = {
 
 export default function RaceNewForm() {
   const [race, setRace] = useState<RaceInput>(DEFAULT_INPUT);
-  const { mutate } = useMutation('post', '/races');
+  const mutation = useMutation('post', '/races');
+  const { mutate, error } = mutation;
 
   const onSubmit: SubmitEventHandler = useCallback((_, changes) => {
     mutate({
@@ -20,5 +21,5 @@ export default function RaceNewForm() {
     });
   }, []);
 
-  return <RaceForm input={race} onSubmit={onSubmit} onChange={(_, changes) => setRace(changes)} />;
+  return <RaceForm input={race} error={error} onSubmit={onSubmit} onChange={(_, changes) => setRace(changes)} />;
 }
