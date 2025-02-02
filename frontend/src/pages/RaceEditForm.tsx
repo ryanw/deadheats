@@ -39,7 +39,7 @@ export function RaceEditForm(props: RaceFormProps) {
   return (
     changes
       ? <RaceForm input={changes} error={error} onSubmit={onSubmit} onChange={(_, changes) => setChanges(changes)} />
-      : <div>Loading...</div>
+      : <LoadingRace />
   );
 }
 
@@ -71,3 +71,11 @@ function mapCompetitorToInput(competitor: Competitor): CompetitorInput {
   };
 }
 
+export function LoadingRace() {
+  return (
+    <>
+      <h1>Loading Race</h1>
+      <p>Please wait...</p>
+    </>
+  );
+}

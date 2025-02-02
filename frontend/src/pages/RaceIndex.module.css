@@ -66,10 +66,11 @@
   position: relative;
   &::before {
     display: block;
+    z-index: 100;
     content: "Loading...";
 
     position: absolute;
-    top: 4em;
+    top: 320px;
     left: 50%;
     margin-left: -60px;
     width: 120px;

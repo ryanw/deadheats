@@ -18,8 +18,8 @@
   padding: 0 ! important;
   h1 {
     --margin: calc(var(--pad) * -1);
-    margin: var(--margin)  var(--margin) var(--pad-small) var(--margin);
-    padding: var(--pad-small) var(--pad);
+    margin: var(--margin) var(--margin) var(--pad-small) var(--margin);
+    padding: var(--pad-small) 64px var(--pad-small) var(--pad);
     background: rgba(0, 0, 0, 0.1);
   }
   .content {
