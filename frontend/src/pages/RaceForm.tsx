@@ -75,6 +75,7 @@ export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
     <div className={styles.form}>
       <h1>{input.name.toString().trim() || 'Untitled race'}</h1>
       <form onSubmit={onSubmitForm}>
+        <p>Name your race and add as many lanes as required.</p>
         <div className={styles.toolbar}>
           <button type="button" onClick={onClickAddLane}>Add Lane</button>
           <button type="submit">Save</button>
@@ -82,17 +83,28 @@ export function RaceForm({ input, error, onChange, onSubmit }: RaceFormProps) {
 
         <ErrorMessage error={error} />
         <div>
-          <label htmlFor="race-name">Name</label>
+          <label htmlFor="race-name">Race Name</label>
           <input autoFocus={focusName} id="race-name" type="text" name="name" value={input.name} onChange={onChangeInput} />
         </div>
-        {activeLanes.map(([lane, i]) =>
-          <div key={lane.id ?? `lane-${i}`}>
-            <label htmlFor={`lane-${i}`}>{lane.name}</label>
-            <input id={`lane-${i}`} autoFocus={focusLane && i === activeLanes.length - 1} name="name" value={lane.competitor?.name ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
-            <input name="position" type="number" step="1" min="1" max={laneCount} value={lane.competitor?.position ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} />
-            <button type="button" onClick={(e) => onClickRemoveLane(e, i)}>Remove</button>
-          </div>
-        )}
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Competitor</th>
+              <th>Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            {activeLanes.map(([lane, i]) =>
+              <tr key={lane.id ?? `lane-${i}`}>
+                <td><label htmlFor={`lane-${i}`}>{lane.name}</label></td>
+                <td><input id={`lane-${i}`} autoFocus={focusLane && i === activeLanes.length - 1} name="name" value={lane.competitor?.name ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} /></td>
+                <td><input name="position" type="number" step="1" min="1" max={laneCount} value={lane.competitor?.position ?? ""} onChange={(e) => onChangeCompetitorInput(e, i)} /></td>
+                <td><button type="button" onClick={(e) => onClickRemoveLane(e, i)}>Remove</button></td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </form>
     </div>
   );
