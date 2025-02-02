@@ -320,7 +320,8 @@
             "type": "integer"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "competitor": {
             "$ref": "#/components/schemas/CompetitorInput",

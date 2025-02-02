@@ -1,6 +1,8 @@
 class Race < ApplicationRecord
-  has_many :lanes, dependent: :destroy
+  has_many :lanes, -> { order(:sort) }, dependent: :destroy
   accepts_nested_attributes_for :lanes, allow_destroy: true
+  before_save :remove_empty_lanes
+  before_save :update_lane_sort
 
   validates :name, presence: true, format: { with: /\S/, message: 'cannot be blank' }
   validate :validate_minimum_lane_count
@@ -17,7 +19,7 @@ class Race < ApplicationRecord
       next_place = 1
       prev_place = 1
       sorted_lanes = lanes
-        .filter { |lane| not lane.competitor&.position.nil? }
+        .filter { |lane| not lane.name.nil? and not lane.competitor&.position.nil? }
         .sort { |a, b| a.competitor.position <=> b.competitor.position }
 
       for lane in sorted_lanes
@@ -27,6 +29,17 @@ class Race < ApplicationRecord
 
         next_place += 1
         prev_place = lane.competitor.position
+      end
+    end
+
+    def remove_empty_lanes
+      self.lanes = lanes.filter { |lane| not lane.name.nil? }
+    end
+
+    def update_lane_sort
+      self.lanes = lanes.map.with_index do |lane, i|
+        lane[:sort] = i
+        lane
       end
     end
 end

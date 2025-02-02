@@ -98,7 +98,7 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: { type: :integer },
-              name: { type: :string },
+              name: { type: :string, nullable: true },
               competitor: { '$ref': '#/components/schemas/CompetitorInput', nullable: true },
             },
             required: [ 'name' ],

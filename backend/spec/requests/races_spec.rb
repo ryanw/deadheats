@@ -218,6 +218,49 @@ describe 'races', type: :request do
         let(:race) { { race: { name: 'Updated Race' } } }
         run_test!
       end
+
+      response(200, 'Adds a new lane', document: false) do
+        let(:id) { @berlin.id }
+        let(:race) do
+          {
+            race: {
+              lanes: [
+                { name: "Lane 1", id: @berlin.lanes[0].id },
+                { name: "Lane 2", id: @berlin.lanes[1].id },
+                { name: "New Lane" },
+                { name: "Lane 3", id: @berlin.lanes[2].id },
+              ]
+            }
+          }
+        end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['lanes'].length).to eq(4)
+        end
+      end
+
+      response(200, 'Removes a new lane', document: false) do
+        let(:id) { @berlin.id }
+        let(:race) do
+          {
+            race: {
+              lanes: [
+                { name: "Lane 1", id: @berlin.lanes[0].id },
+                { name: nil, id: @berlin.lanes[1].id },
+                { name: "Lane 3", id: @berlin.lanes[2].id },
+              ]
+            }
+          }
+        end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['lanes'].length).to eq(2)
+          expect(data['lanes'][0]['sort']).to eq(0)
+          expect(data['lanes'][0]['id']).to eq(@berlin.lanes[0].id)
+          expect(data['lanes'][1]['sort']).to eq(1)
+          expect(data['lanes'][1]['id']).to eq(@berlin.lanes[2].id)
+        end
+      end
     end
 
     delete('Delete a race') do

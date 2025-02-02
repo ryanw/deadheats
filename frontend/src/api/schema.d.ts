@@ -271,7 +271,7 @@ export interface components {
          *     } */
         LaneInput: {
             id?: number;
-            name: string;
+            name: string | null;
             competitor?: components["schemas"]["CompetitorInput"];
         };
         /** @example {

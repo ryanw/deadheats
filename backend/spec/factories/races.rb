@@ -39,7 +39,6 @@ FactoryBot.define do
         { name: "Lane A", sort: 0 },
         { name: "Lane B", sort: 1 },
         { name: "Lane C", sort: 2 },
-        { name: "Lane C", sort: 3 },
       ]
     }
   end

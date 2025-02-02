@@ -15,7 +15,7 @@ class RacesController < ApplicationController
 
   # POST /races
   def create
-    @race = Race.new(race_params(sort_lanes: true))
+    @race = Race.new(race_params)
 
     if @race.save
       render json: @race, status: :created, location: @race, include: race_includes
@@ -43,20 +43,16 @@ class RacesController < ApplicationController
       @race = Race.includes(lanes: [:competitor]).find(params.expect(:id))
     end
 
-    def race_params(sort_lanes: false)
+    def race_params
       # Remap nested records to *_attributes
       final_params = params.expect(race: [:name, lanes: [[:id, :name, competitor: [:id, :name, :position]]]])
       if final_params.key?(:lanes)
-        final_params[:lanes_attributes] = final_params.delete(:lanes).map.with_index { |lane, i|
+        final_params[:lanes_attributes] = final_params.delete(:lanes).map do |lane|
           if lane.key?(:competitor)
             lane[:competitor_attributes] = lane.delete(:competitor)
           end
-
-          # Inject sort order
-          lane[:sort] = i if sort_lanes
-
           lane
-        }
+        end
       end
 
       final_params
